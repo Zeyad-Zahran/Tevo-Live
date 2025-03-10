@@ -1,6 +1,8 @@
 
-const apiKey = "1125921903e70b518893cd14bbc62d51"; // استبدل بمفتاحك الحقيقي
-const matchesUrl = "https://v3.football.api-sports.io/fixtures?live=all"; 
+const apiKey = "7746eaf28b7753de9e933a99189e036a"; // ضع مفتاح API هنا
+const matchesUrl = "https://v3.football.api-sports.io/fixtures?live=all"; // API لجلب المباريات الحية
+//const apiKey = "1125921903e70b518893cd14bbc62d51"; // استبدل بمفتاحك الحقيقي
+//const matchesUrl = "https://v3.football.api-sports.io/fixtures?live=all"; 
 
 
 function filterMatches() {
