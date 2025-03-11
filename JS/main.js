@@ -1,9 +1,9 @@
 const apiKeys = [
+    "a60d8104f1f6ec2278591f3f0ea32682"
     "8a6a9e518bd9a1a22cd36c1abccc693f",
     "3685406a217fbad1bc070bc189fa5e87",
     "2172e857da16c9a81f98e28db160f7e4",
     "2059275dc97121229c45f10bad9171fd",
-    "a60d8104f1f6ec2278591f3f0ea32682"
 ];
 let currentKeyIndex = 0;
 
