@@ -67,6 +67,13 @@
 
 }
 
+.l-n {
+    font-size: 15px;
+}
+
+.i-l-n {
+    width:35px;
+}
 
 .match-card {
     display: flex;
@@ -302,7 +309,7 @@ header {
 }
 
 .f-icon-img {
-    width:400px;
+    width:120px;
     height:140px;
 }
 
