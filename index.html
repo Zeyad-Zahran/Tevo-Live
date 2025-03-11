@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tevo Live | league live</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; text-align: center; background: #f9f9f9; }
+        header { background: #ff4b44; color: white; padding: 20px; font-size: 24px; }
+        .league-container { width: 90%; max-width: 800px; margin: 20px auto; }
+        .league-card { background: white; padding: 15px; margin: 10px 0; font-size: 18px; font-weight: bold; cursor: pointer; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        .league-card img { width: 40px; height: 40px; }
+        footer { padding: 20px; background: #ff4b44; color: white; margin-top: 40px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Tevo Live</h1>
+    <h2> Live league </h2>
+</header>
+<div class="league-container" id="leagues-container"> ⏳ loading matches.. </div>
+<footer><p>&copy; 2025 All Rights Reserved developer: Zeyad Zahran</p></footer>
+
+<script>
+    const apiKeys = [
+        "2172e857da16c9a81f98e28db160f7e4",
+        "2059275dc97121229c45f10bad9171fd",
+        "3685406a217fbad1bc070bc189fa5e87",
+        "8a6a9e518bd9a1a22cd36c1abccc693f",
+        "a60d8104f1f6ec2278591f3f0ea32682"
+    ];
+    let currentKeyIndex = 0;
+    
+    function getApiKey() { return apiKeys[currentKeyIndex]; }
+    
+    function switchApiKey() { 
+        currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length; 
+        console.log(`🔄 Switched to API Key: ${getApiKey()}`); 
+    }
+
+    function fetchLiveMatches(retry = true) {
+        fetch(`https://v3.football.api-sports.io/fixtures?live=all`, {
+            method: "GET",
+            headers: { "x-apisports-key": getApiKey() },
+        })
+        .then(response => {
+            if (!response.ok) throw new Error(`API request failed: ${response.status}`);
+            return response.json();
+        })
+        .then(data => {
+            const leaguesContainer = document.getElementById("leagues-container");
+            leaguesContainer.innerHTML = "";
+            if (!data.response || data.response.length === 0) {
+                leaguesContainer.innerHTML = "<p>🚀 No live matches now </p>";
+                return;
+            }
+
+            let leagues = {};
+            data.response.forEach(match => {
+                const leagueId = match.league.id;
+                if (!leagues[leagueId]) {
+                    leagues[leagueId] = { name: match.league.name, logo: match.league.logo };
+                }
+            });
+
+            Object.entries(leagues).forEach(([id, league]) => {
+                const leagueElement = document.createElement("div");
+                leagueElement.classList.add("league-card");
+                leagueElement.innerHTML = `
+                    <span>🏆 ${league.name}</span>
+                    <img src="${league.logo}" alt="${league.name} Logo">
+                `;
+                leagueElement.addEventListener("click", () => {
+                    window.location.href = `league.html?id=${id}&name=${encodeURIComponent(league.name)}`;
+                });
+                leaguesContainer.appendChild(leagueElement);
+            });
+        })
+        .catch(error => {
+            console.error("❌ Error", error);
+            if (retry) {
+                console.log("🔄 Retrying with a new API key...");
+                switchApiKey();
+                fetchLiveMatches(false);
+            } else {
+                document.getElementById("leagues-container").innerHTML = "<p>❌ تأكد من الاتصال بالإنترنت</p>";
+            }
+        });
+    }
+
+    fetchLiveMatches();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tevo Live | league</title>
+    <style>
+        body { font-family: 'Roboto', sans-serif; text-align: center; background: #f9f9f9; }
+        header { background: #ff4b44; color: white; padding: 20px; font-size: 24px; }
+        .match-container { width: 90%; max-width: 800px; margin: 20px auto; }
+        .match-card { background: white; padding: 15px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        .team-logo { width: 50px; height: 50px; border-radius: 50%; }
+        footer { padding: 20px; background: #ff4b44; color: white; margin-top: 40px; }
+        @media (max-width: 768px) {
+    .f-icon-img {
+        width: 250px;
+        height: 90px;
+    }
+    .team-logo {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+    }
+    .team span,div {
+        font-size: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .f-icon-img {
+        width: 200px;
+        height: 70px;
+    }
+    .team-logo {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+    }
+    .team span,div {
+        font-size: 8px;
+    }
+}
+    </style>
+</head>
+<body>
+
+<header id="league-title"> <h1>Tevo Live</h1><h2>⚽ league</h2></header>
+<div class="match-container" id="matches-container"> ⏳ loading matches ...</div>
+<footer><p>&copy; 2025 All Rights Reserved developer: Zeyad Zahran</p></footer>
+
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const leagueId = urlParams.get("id");
+    const leagueName = urlParams.get("name");
+
+    if (leagueName) document.getElementById("league-title").innerText = `🏆 ${leagueName}`;
+
+    function fetchLeagueMatches() {
+        fetch(`https://v3.football.api-sports.io/fixtures?live=all&league=${leagueId}`, {
+            method: "GET",
+            headers: { "x-apisports-key":"2172e857da16c9a81f98e28db160f7e4",
+                                        // "2172e857da16c9a81f98e28db160f7e4"
+                                        // "3685406a217fbad1bc070bc189fa5e87"
+                                        // "8a6a9e518bd9a1a22cd36c1abccc693f"
+                                        // "a60d8104f1f6ec2278591f3f0ea32682"
+}
+        })
+        .then(response => response.json())
+        .then(data => {
+            const matchesContainer = document.getElementById("matches-container");
+            matchesContainer.innerHTML = "";
+
+            if (!data.response || data.response.length === 0) {
+                matchesContainer.innerHTML = "<p>🚀 No live matches now</p>";
+                return;
+            }
+
+            data.response.forEach(match => {
+            const matchElement = document.createElement("div");
+            matchElement.classList.add("match");
+            matchElement.innerHTML = `
+                <a style="text-decoration:none;color:inherit;" href="match.html?id=${match.fixture.id}" class="match-link">
+                    <section class="match-card">
+                        <div class="league">
+                            <p class="l-n">🏆 ${match.league.name}</p>
+                            <img class="team-logo" src="${match.league.logo}" alt="${match.league.name} Logo">
+                        </div>
+                        <div class="team">
+                            <img src="${match.teams.home.logo}" alt="${match.teams.home.name}" class="team-logo">
+                            <span>${match.teams.home.name}</span>
+                        </div>
+                        
+                        <div class="match-info">
+                            <p class="result">⚽ ${match.goals.home ?? 0} - ${match.goals.away ?? 0}</p>
+                            <p class="time">⏱ ${match.fixture.status.elapsed}'</p>
+                        </div>
+                        
+                        <div class="team">
+                            <span>${match.teams.away.name}</span>
+                            <img src="${match.teams.away.logo}" alt="${match.teams.away.name}" class="team-logo">
+                        </div>
+                    </section>
+                </a>
+            `;
+                matchesContainer.appendChild(matchElement);
+            });
+        });
+    }
+
+    fetchLeagueMatches();
+</script>
+
+</body>
+</html>
